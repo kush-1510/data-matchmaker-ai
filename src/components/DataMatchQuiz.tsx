@@ -63,7 +63,8 @@ const results = [
     id: 'shadow-ai',
     emoji: '👻',
     title: 'Shadow AI Model',
-    description: 'Great chemistry, terrible communication.',
+    age: 'Unknown',
+    description: "I move fast and break compliance. Big fan of secrets, hate documentation.\nI'll ghost you during audits but look amazing in demos.",
     ctaText: 'See how Atlan brings models into the light',
     ctaUrl: '#'
   },
@@ -167,10 +168,13 @@ export const DataMatchQuiz: React.FC = () => {
       <div className="max-w-2xl mx-auto space-y-8">
         <Card className="p-8 text-center shadow-card-hover border-2">
           <div className="text-6xl mb-4">{result.emoji}</div>
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            Your Perfect Match: {result.title}
+          <h2 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            {result.title}
           </h2>
-          <p className="text-lg text-muted-foreground mb-6">{result.description}</p>
+          {result.age && (
+            <p className="text-lg text-muted-foreground mb-4">Age: {result.age}</p>
+          )}
+          <p className="text-lg text-muted-foreground mb-6 whitespace-pre-line">{result.description}</p>
           
           <div className="space-y-4">
             <Button size="lg" onClick={() => window.open(result.ctaUrl, '_blank')}>
