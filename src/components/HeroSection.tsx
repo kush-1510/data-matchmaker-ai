@@ -24,14 +24,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartQuiz }) => {
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent leading-tight">
-          Find your perfect<br />
+          Who's your perfect<br />
           <span className="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
-            data match
-          </span>
+            data match?
+          </span> 💘
         </h1>
         
         <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
-          Stop ghosting your data, start a real relationship.
+          Pipelines that flake. Dashboards that lie. Shadow AI that ghosts you. Swipe through the red flags and see who you really click with.
         </p>
         
         <Button 
@@ -39,7 +39,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartQuiz }) => {
           onClick={onStartQuiz}
           className="text-lg px-8 py-4 h-auto bg-white text-gray-900 hover:bg-white/90 hover:scale-105 shadow-2xl"
         >
-          Start swiping
+          Start swiping ❤️
         </Button>
         
         {/* Floating Elements */}
