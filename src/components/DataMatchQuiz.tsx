@@ -43,12 +43,12 @@ const questions = [
     ]
   },
   {
-    text: "What's your biggest red flag?",
+    text: "Biggest red flag?",
     options: [
       { text: "Ghosts you during audits", subtitle: "" },
       { text: "Shows up late with broken pipelines", subtitle: "" },
-      { text: "Never shares context, just vibes", subtitle: "" },
-      { text: "Promises they're \"AI-ready\" but can't even pass a lineage check", subtitle: "" }
+      { text: "Secretive, never shares lineage", subtitle: "" },
+      { text: "Swears they're \"AI-ready\" but breaks at scale", subtitle: "" }
     ]
   }
 ];
