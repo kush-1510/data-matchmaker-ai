@@ -87,9 +87,9 @@ const results = [
     title: 'Atlan',
     age: 'Timeless',
     description: 'Transparent, reliable, AI-ready. Context is my love language. I\'ll never ghost you, and your board will love me. Let\'s build something real.',
-    ctaText: 'Book a demo',
+    ctaText: 'Get Modern data & AI governance blueprint',
     ctaUrl: '#',
-    secondaryCta: 'See it live at Re:Govern',
+    secondaryCta: 'Find a healthier relationship at Re:Govern',
     secondaryUrl: 'https://atlan.com/regovern/'
   }
 ];
