@@ -36,10 +36,10 @@ const questions = [
   {
     text: "What do you want most in a partner?",
     options: [
-      { text: "Someone who always brings context to the table", subtitle: "👑" },
-      { text: "Active, not passive, about metadata", subtitle: "" },
-      { text: "Ready for the future (and AI)", subtitle: "" },
-      { text: "All of the above", subtitle: "(why settle?)" }
+      { text: "Reliability, no surprises", subtitle: "" },
+      { text: "Context that's actually useful", subtitle: "" },
+      { text: "Metadata that works as hard as I do", subtitle: "" },
+      { text: "AI-ready from day one", subtitle: "" }
     ]
   },
   {
