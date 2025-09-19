@@ -9,8 +9,11 @@ import { Share2, Linkedin, Twitter } from 'lucide-react';
 interface QuizState {
   currentQuestion: number;
   answers: (number | null)[];
+  showSwipeCards: boolean;
+  currentCard: number;
   showResult: boolean;
   showLeadForm: boolean;
+  selectedMatch: string | null;
 }
 
 interface LeadFormData {
@@ -95,8 +98,11 @@ export const DataMatchQuiz: React.FC = () => {
   const [quiz, setQuiz] = useState<QuizState>({
     currentQuestion: 0,
     answers: [null, null, null],
+    showSwipeCards: false,
+    currentCard: 0,
     showResult: false,
-    showLeadForm: false
+    showLeadForm: false,
+    selectedMatch: null
   });
 
   const [leadForm, setLeadForm] = useState<LeadFormData>({
@@ -120,12 +126,41 @@ export const DataMatchQuiz: React.FC = () => {
       setQuiz({
         ...quiz,
         answers: newAnswers,
-        showResult: true
+        showSwipeCards: true
       });
     }
   };
 
+  const handleCardChoice = (choice: 'skip' | 'choose') => {
+    if (choice === 'choose') {
+      setQuiz({
+        ...quiz,
+        selectedMatch: results[quiz.currentCard].id,
+        showResult: true
+      });
+    } else {
+      // Skip to next card
+      if (quiz.currentCard < results.length - 1) {
+        setQuiz({
+          ...quiz,
+          currentCard: quiz.currentCard + 1
+        });
+      } else {
+        // If they've skipped all cards, show Atlan as default
+        setQuiz({
+          ...quiz,
+          selectedMatch: 'atlan',
+          showResult: true
+        });
+      }
+    }
+  };
+
   const getResult = () => {
+    if (quiz.selectedMatch) {
+      return results.find(r => r.id === quiz.selectedMatch) || results[3];
+    }
+    
     const answers = quiz.answers;
     
     // Simple logic to determine result based on answers
@@ -139,8 +174,11 @@ export const DataMatchQuiz: React.FC = () => {
     setQuiz({
       currentQuestion: 0,
       answers: [null, null, null],
+      showSwipeCards: false,
+      currentCard: 0,
       showResult: false,
-      showLeadForm: false
+      showLeadForm: false,
+      selectedMatch: null
     });
   };
 
@@ -280,6 +318,53 @@ export const DataMatchQuiz: React.FC = () => {
             Take Quiz Again
           </Button>
         </div>
+      </div>
+    );
+  }
+
+  // Swipe Cards Section
+  if (quiz.showSwipeCards) {
+    const currentCard = results[quiz.currentCard];
+    
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+            Your potential matches
+          </h2>
+          <p className="text-muted-foreground">
+            Card {quiz.currentCard + 1} of {results.length}
+          </p>
+        </div>
+
+        <Card className="p-8 text-center shadow-card-hover border-2 bg-gradient-to-br from-background to-muted/20">
+          <div className="text-6xl mb-4">{currentCard.emoji}</div>
+          <h3 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            {currentCard.title}
+          </h3>
+          <p className="text-lg text-muted-foreground mb-4">Age: {currentCard.age}</p>
+          <p className="text-lg text-muted-foreground mb-8 whitespace-pre-line leading-relaxed">
+            {currentCard.description}
+          </p>
+          
+          <div className="flex justify-center space-x-4">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => handleCardChoice('skip')}
+              className="px-8"
+            >
+              ❌ Skip
+            </Button>
+            <Button 
+              size="lg"
+              onClick={() => handleCardChoice('choose')}
+              className="px-8 bg-gradient-primary"
+            >
+              ❤️ Choose
+            </Button>
+          </div>
+        </Card>
       </div>
     );
   }
