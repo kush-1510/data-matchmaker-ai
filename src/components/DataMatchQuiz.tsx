@@ -27,10 +27,10 @@ const questions = [
   {
     text: "What ruins your week most often?",
     options: [
-      { text: "Missing metadata that should be obvious", subtitle: "Context is king 👑" },
-      { text: "Dashboards that all say something different", subtitle: "" },
-      { text: "Pipelines breaking right before an exec meeting", subtitle: "" },
-      { text: "New AI models popping up with no governance", subtitle: "" }
+      { text: "A 3 a.m. pipeline alert (again)", subtitle: "" },
+      { text: "Another \"AI experiment\" nobody approved", subtitle: "" },
+      { text: "Dashboards that all tell a different story", subtitle: "" },
+      { text: "Chasing missing context like it's a crime scene", subtitle: "" }
     ]
   },
   {
