@@ -53,9 +53,10 @@ const questions = [
 const results = [
   {
     id: 'pipeline',
-    emoji: '⏰',
+    emoji: '💔',
     title: 'Unreliable Pipeline',
-    description: 'Fun at parties, missing at standups.',
+    age: '5 years old, but feels like 50',
+    description: 'Always late, never commits. Loves breaking right before exec reviews. Swipe right if you enjoy 3 a.m. alerts and trust issues.',
     ctaText: 'See how Atlan fixes this',
     ctaUrl: '#'
   },
@@ -72,7 +73,8 @@ const results = [
     id: 'data-quality',
     emoji: '✅',
     title: 'Data Quality',
-    description: 'Dependable, underappreciated, ready to commit.',
+    age: 'Mature, dependable',
+    description: 'Low drama, high standards. Gets overlooked, but always there when you need me. Ready for a long-term relationship, if you\'ll just notice me.',
     ctaText: 'See how Atlan makes quality everyone\'s job',
     ctaUrl: '#'
   },
@@ -80,7 +82,8 @@ const results = [
     id: 'atlan',
     emoji: '💙',
     title: 'Atlan',
-    description: 'Transparent, reliable, and ready for the board.',
+    age: 'Timeless',
+    description: 'Transparent, reliable, AI-ready. Context is my love language. I\'ll never ghost you, and your board will love me. Let\'s build something real.',
     ctaText: 'Book a demo',
     ctaUrl: '#',
     secondaryCta: 'See it live at Re:Govern',
