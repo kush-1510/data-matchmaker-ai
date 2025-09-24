@@ -87,10 +87,8 @@ const results = [
     title: 'Atlan',
     age: 'Timeless',
     description: 'Transparent, reliable, AI-ready. Context is my love language. I\'ll never ghost you, and your board will love me. Let\'s build something real.',
-    ctaText: 'Get Modern data & AI governance blueprint',
-    ctaUrl: '#',
-    secondaryCta: 'Find a healthier relationship at Re:Govern',
-    secondaryUrl: 'https://atlan.com/regovern/'
+    ctaText: 'Find a healthier relationship at Re:Govern',
+    ctaUrl: 'https://atlan.com/regovern/'
   }
 ];
 
@@ -209,7 +207,7 @@ export const DataMatchQuiz: React.FC = () => {
       <div className="max-w-2xl mx-auto space-y-8">
         <Card className="p-8 text-center shadow-card-hover border-2">
           <div className="text-6xl mb-4">{result.emoji}</div>
-          <h2 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent font-heading">
             {result.title}
           </h2>
           {result.age && (
@@ -221,97 +219,30 @@ export const DataMatchQuiz: React.FC = () => {
             <Button size="lg" onClick={() => window.open(result.ctaUrl, '_blank')}>
               {result.ctaText}
             </Button>
-            
-            {result.secondaryCta && (
-              <Button 
-                variant="secondary" 
-                size="lg"
-                onClick={() => window.open(result.secondaryUrl, '_blank')}
-              >
-                {result.secondaryCta}
-              </Button>
-            )}
           </div>
         </Card>
 
         <div className="flex justify-center space-x-4">
-          <Button variant="share" onClick={shareOnLinkedIn}>
-            <Linkedin className="w-4 h-4" />
-            Share
+          <Button variant="linkedin" onClick={shareOnLinkedIn}>
+            <Linkedin className="w-4 h-4 mr-2" />
+            Share on LinkedIn
           </Button>
-          <Button variant="share" onClick={shareOnTwitter}>
-            <Twitter className="w-4 h-4" />
-            Tweet
+          <Button variant="twitter" onClick={shareOnTwitter}>
+            <Twitter className="w-4 h-4 mr-2" />
+            Share on X
           </Button>
         </div>
 
-        {!quiz.showLeadForm && (
-          <div className="text-center">
-            <Button 
-              variant="outline" 
-              onClick={() => setQuiz({ ...quiz, showLeadForm: true })}
-            >
-              Want updates? Leave your info
-            </Button>
-          </div>
-        )}
-
-        {quiz.showLeadForm && (
-          <Card className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Stay in touch</h3>
-            <form onSubmit={submitLeadForm} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={leadForm.name}
-                    onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Work Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={leadForm.email}
-                    onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="company">Company</Label>
-                  <Input
-                    id="company"
-                    value={leadForm.company}
-                    onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="role">Role</Label>
-                  <Input
-                    id="role"
-                    value={leadForm.role}
-                    onChange={(e) => setLeadForm({ ...leadForm, role: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex space-x-4">
-                <Button type="submit">Submit</Button>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  onClick={() => setQuiz({ ...quiz, showLeadForm: false })}
-                >
-                  Skip
-                </Button>
-              </div>
-            </form>
-          </Card>
-        )}
+        <div className="text-center">
+          <a 
+            href="https://atlan.com/regovern?ref=regovern-quiz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            Join us at Re:Govern →
+          </a>
+        </div>
 
         <div className="text-center">
           <Button variant="ghost" onClick={resetQuiz}>
@@ -329,7 +260,7 @@ export const DataMatchQuiz: React.FC = () => {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent font-heading">
             Your potential matches
           </h2>
           <p className="text-muted-foreground">
@@ -339,7 +270,7 @@ export const DataMatchQuiz: React.FC = () => {
 
         <Card className="p-8 text-center shadow-card-hover border-2 bg-gradient-to-br from-background to-muted/20">
           <div className="text-6xl mb-4">{currentCard.emoji}</div>
-          <h3 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+          <h3 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent font-heading">
             {currentCard.title}
           </h3>
           <p className="text-lg text-muted-foreground mb-4">Age: {currentCard.age}</p>
@@ -388,14 +319,14 @@ export const DataMatchQuiz: React.FC = () => {
       </div>
 
       <Card className="p-8 shadow-card-hover">
-        <h2 className="text-2xl font-bold mb-8 text-center">{currentQ.text}</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center font-heading">{currentQ.text}</h2>
         
         <div className="space-y-4">
           {currentQ.options.map((option, index) => (
             <Button
               key={index}
               variant="quiz"
-              className="w-full p-6 h-auto text-left justify-start"
+              className="w-full p-6 h-auto text-left justify-start transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
               onClick={() => handleAnswer(index)}
             >
               <div>

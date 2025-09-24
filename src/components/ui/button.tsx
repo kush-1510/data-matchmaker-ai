@@ -17,6 +17,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         quiz: "bg-card text-card-foreground border border-border hover:bg-gradient-secondary hover:text-secondary-foreground hover:scale-105 shadow-card transition-all duration-300",
         share: "bg-gradient-accent text-accent-foreground hover:scale-105 shadow-button",
+        linkedin: "bg-[hsl(var(--linkedin))] text-white hover:bg-[hsl(var(--linkedin))]/90 shadow-lg border-0",
+        twitter: "bg-[hsl(var(--twitter))] text-white hover:bg-[hsl(var(--twitter))]/90 shadow-lg border-0",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -23,7 +23,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartQuiz }) => {
       
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent leading-tight">
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent leading-tight font-heading">
           Who's your perfect<br />
           <span className="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
             data match?
