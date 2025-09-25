@@ -214,7 +214,7 @@ export const DataMatchQuiz: React.FC = () => {
           }, 100);
         }
       }
-    }, 400); // 400ms for swipe animation
+    }, 700); // 700ms for swipe animation
   };
 
   const getResult = () => {
@@ -339,7 +339,7 @@ export const DataMatchQuiz: React.FC = () => {
           </p>
         </div>
 
-        <Card className={`p-8 text-center shadow-card-hover border-2 bg-gradient-to-br from-background to-muted/20 transition-all duration-400 ease-out ${
+        <Card className={`p-8 text-center shadow-card-hover border-2 bg-gradient-to-br from-background to-muted/20 transition-all duration-700 ease-in-out ${
           quiz.cardSwipeDirection === 'left' ? 'transform -translate-x-full -rotate-12 opacity-0' :
           quiz.cardSwipeDirection === 'right' ? 'transform translate-x-full rotate-12 opacity-0' :
           'transform translate-x-0 rotate-0 opacity-100'
