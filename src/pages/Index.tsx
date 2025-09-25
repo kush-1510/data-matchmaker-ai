@@ -23,7 +23,7 @@ const Index = () => {
       
       {showQuiz && (
         <section id="quiz-section" className="py-16 px-6">
-          <div className="container mx-auto">
+          <div className="mx-auto">
             <DataMatchQuiz />
           </div>
         </section>

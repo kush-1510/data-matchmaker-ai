@@ -6,7 +6,7 @@ export const Footer: React.FC = () => {
       <p className="text-muted-foreground">
         Want to see this match in action?{' '}
         <a 
-          href="https://atlan.com/regovern/" 
+          href="https://atlan.com/regovern/?ref=/regovern-quiz" 
           target="_blank" 
           rel="noopener noreferrer"
           className="text-primary hover:underline font-medium"

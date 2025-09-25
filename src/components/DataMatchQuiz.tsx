@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Share2, Linkedin, Twitter } from 'lucide-react';
+import { Share2, Linkedin, Twitter, RotateCcw } from 'lucide-react';
+import XIcon from '../assets/x-icon.png';
 
 interface QuizState {
   currentQuestion: number;
@@ -14,6 +12,11 @@ interface QuizState {
   showResult: boolean;
   showLeadForm: boolean;
   selectedMatch: string | null;
+  isTransitioning: boolean;
+  slideDirection: 'in' | 'out' | 'none';
+  resultVisible: boolean;
+  cardSwipeDirection: 'left' | 'right' | 'none';
+  isCardAnimating: boolean;
 }
 
 interface LeadFormData {
@@ -61,7 +64,7 @@ const results = [
     age: '5 years old, but feels like 50',
     description: 'Always late, never commits. Loves breaking right before exec reviews. Swipe right if you enjoy 3 a.m. alerts and trust issues.',
     ctaText: 'See how Atlan fixes this',
-    ctaUrl: '#'
+    ctaUrl: 'https://atlan.com/regovern/?ref=/regovern-quiz'
   },
   {
     id: 'shadow-ai',
@@ -70,7 +73,7 @@ const results = [
     age: 'Unknown',
     description: "I move fast and break compliance. Big fan of secrets, hate documentation.\nI'll ghost you during audits but look amazing in demos.",
     ctaText: 'See how Atlan brings models into the light',
-    ctaUrl: '#'
+    ctaUrl: 'https://atlan.com/regovern/?ref=/regovern-quiz'
   },
   {
     id: 'data-quality',
@@ -79,7 +82,7 @@ const results = [
     age: 'Mature, dependable',
     description: 'Low drama, high standards. Gets overlooked, but always there when you need me. Ready for a long-term relationship, if you\'ll just notice me.',
     ctaText: 'See how Atlan makes quality everyone\'s job',
-    ctaUrl: '#'
+    ctaUrl: 'https://atlan.com/regovern/?ref=/regovern-quiz'
   },
   {
     id: 'atlan',
@@ -88,7 +91,7 @@ const results = [
     age: 'Timeless',
     description: 'Transparent, reliable, AI-ready. Context is my love language. I\'ll never ghost you, and your board will love me. Let\'s build something real.',
     ctaText: 'Find a healthier relationship at Re:Govern',
-    ctaUrl: 'https://atlan.com/regovern/'
+    ctaUrl: 'https://atlan.com/regovern/?ref=/regovern-quiz'
   }
 ];
 
@@ -100,7 +103,12 @@ export const DataMatchQuiz: React.FC = () => {
     currentCard: 0,
     showResult: false,
     showLeadForm: false,
-    selectedMatch: null
+    selectedMatch: null,
+    isTransitioning: false,
+    slideDirection: 'none',
+    resultVisible: false,
+    cardSwipeDirection: 'none',
+    isCardAnimating: false
   });
 
   const [leadForm, setLeadForm] = useState<LeadFormData>({
@@ -114,44 +122,99 @@ export const DataMatchQuiz: React.FC = () => {
     const newAnswers = [...quiz.answers];
     newAnswers[quiz.currentQuestion] = answerIndex;
     
-    if (quiz.currentQuestion < questions.length - 1) {
-      setQuiz({
-        ...quiz,
-        answers: newAnswers,
-        currentQuestion: quiz.currentQuestion + 1
-      });
-    } else {
-      setQuiz({
-        ...quiz,
-        answers: newAnswers,
-        showSwipeCards: true
-      });
-    }
+    // Start slide-out transition
+    setQuiz({
+      ...quiz,
+      answers: newAnswers,
+      isTransitioning: true,
+      slideDirection: 'out'
+    });
+    
+    // After slide-out animation, update question and slide-in
+    setTimeout(() => {
+      if (quiz.currentQuestion < questions.length - 1) {
+        // Update to next question and start slide-in from right
+        setQuiz({
+          ...quiz,
+          answers: newAnswers,
+          currentQuestion: quiz.currentQuestion + 1,
+          slideDirection: 'in'
+        });
+        
+        // Complete slide-in animation
+        setTimeout(() => {
+          setQuiz(prev => ({
+            ...prev,
+            isTransitioning: false,
+            slideDirection: 'none'
+          }));
+        }, 50); // Small delay to ensure slide-in starts from right
+        
+      } else {
+        setQuiz({
+          ...quiz,
+          answers: newAnswers,
+          showSwipeCards: true,
+          isTransitioning: false,
+          slideDirection: 'none'
+        });
+      }
+    }, 300); // 300ms slide-out duration
   };
 
   const handleCardChoice = (choice: 'skip' | 'choose') => {
-    if (choice === 'choose') {
-      setQuiz({
-        ...quiz,
-        selectedMatch: results[quiz.currentCard].id,
-        showResult: true
-      });
-    } else {
-      // Skip to next card
-      if (quiz.currentCard < results.length - 1) {
+    // Start swipe animation
+    setQuiz({
+      ...quiz,
+      cardSwipeDirection: choice === 'skip' ? 'left' : 'right',
+      isCardAnimating: true
+    });
+
+    // After swipe animation, handle the logic
+    setTimeout(() => {
+      if (choice === 'choose') {
         setQuiz({
           ...quiz,
-          currentCard: quiz.currentCard + 1
+          selectedMatch: results[quiz.currentCard].id,
+          showResult: true,
+          cardSwipeDirection: 'none',
+          isCardAnimating: false
         });
+        // Trigger fade-in animation after a small delay
+        setTimeout(() => {
+          setQuiz(prev => ({
+            ...prev,
+            resultVisible: true
+          }));
+        }, 100);
       } else {
-        // If they've skipped all cards, show Atlan as default
-        setQuiz({
-          ...quiz,
-          selectedMatch: 'atlan',
-          showResult: true
-        });
+        // Skip to next card
+        if (quiz.currentCard < results.length - 1) {
+          setQuiz({
+            ...quiz,
+            currentCard: quiz.currentCard + 1,
+            cardSwipeDirection: 'none',
+            isCardAnimating: false
+          });
+        } else {
+          // If they've skipped all cards, show Atlan as default
+          setQuiz({
+            ...quiz,
+            selectedMatch: 'atlan',
+            showResult: true,
+            cardSwipeDirection: 'none',
+            isCardAnimating: false
+          });
+          // Trigger fade-in animation after a small delay
+          setTimeout(() => {
+            setQuiz(prev => ({
+              ...prev,
+              resultVisible: true
+            }));
+          }, 100);
+        }
       }
-    }
+    }, 400); // 400ms for swipe animation
   };
 
   const getResult = () => {
@@ -176,7 +239,12 @@ export const DataMatchQuiz: React.FC = () => {
       currentCard: 0,
       showResult: false,
       showLeadForm: false,
-      selectedMatch: null
+      selectedMatch: null,
+      isTransitioning: false,
+      slideDirection: 'none',
+      resultVisible: false,
+      cardSwipeDirection: 'none',
+      isCardAnimating: false
     });
   };
 
@@ -204,7 +272,9 @@ export const DataMatchQuiz: React.FC = () => {
     const result = getResult();
     
     return (
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className={`max-w-2xl mx-auto space-y-8 transition-all duration-700 ease-out ${
+        quiz.resultVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+      }`}>
         <Card className="p-8 text-center shadow-card-hover border-2">
           <div className="text-6xl mb-4">{result.emoji}</div>
           <h2 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent font-heading">
@@ -228,14 +298,14 @@ export const DataMatchQuiz: React.FC = () => {
             Share on LinkedIn
           </Button>
           <Button variant="twitter" onClick={shareOnTwitter}>
-            <Twitter className="w-4 h-4 mr-2" />
+            <img src={XIcon} alt="X icon" className="w-6 h-6 mr-1" />
             Share on X
           </Button>
         </div>
 
         <div className="text-center">
           <a 
-            href="https://atlan.com/regovern?ref=regovern-quiz"
+            href="https://atlan.com/regovern/?ref=/regovern-quiz"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -246,6 +316,7 @@ export const DataMatchQuiz: React.FC = () => {
 
         <div className="text-center">
           <Button variant="ghost" onClick={resetQuiz}>
+            <RotateCcw className="w-6 h-6 mr-1" />
             Take Quiz Again
           </Button>
         </div>
@@ -268,7 +339,11 @@ export const DataMatchQuiz: React.FC = () => {
           </p>
         </div>
 
-        <Card className="p-8 text-center shadow-card-hover border-2 bg-gradient-to-br from-background to-muted/20">
+        <Card className={`p-8 text-center shadow-card-hover border-2 bg-gradient-to-br from-background to-muted/20 transition-all duration-400 ease-out ${
+          quiz.cardSwipeDirection === 'left' ? 'transform -translate-x-full -rotate-12 opacity-0' :
+          quiz.cardSwipeDirection === 'right' ? 'transform translate-x-full rotate-12 opacity-0' :
+          'transform translate-x-0 rotate-0 opacity-100'
+        }`}>
           <div className="text-6xl mb-4">{currentCard.emoji}</div>
           <h3 className="text-3xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent font-heading">
             {currentCard.title}
@@ -284,6 +359,7 @@ export const DataMatchQuiz: React.FC = () => {
               size="lg"
               onClick={() => handleCardChoice('skip')}
               className="px-8"
+              disabled={quiz.isCardAnimating}
             >
               ❌ Skip
             </Button>
@@ -291,6 +367,7 @@ export const DataMatchQuiz: React.FC = () => {
               size="lg"
               onClick={() => handleCardChoice('choose')}
               className="px-8 bg-gradient-primary"
+              disabled={quiz.isCardAnimating}
             >
               ❤️ Choose
             </Button>
@@ -318,7 +395,11 @@ export const DataMatchQuiz: React.FC = () => {
         </div>
       </div>
 
-      <Card className="p-8 shadow-card-hover">
+      <Card className={`p-8 shadow-card-hover transition-all duration-300 ease-in-out ${
+        quiz.slideDirection === 'out' ? 'transform translate-x-full opacity-0' :
+        quiz.slideDirection === 'in' ? 'transform -translate-x-full opacity-0' :
+        'transform translate-x-0 opacity-100'
+      }`}>
         <h2 className="text-2xl font-bold mb-8 text-center font-heading">{currentQ.text}</h2>
         
         <div className="space-y-4">
@@ -326,8 +407,9 @@ export const DataMatchQuiz: React.FC = () => {
             <Button
               key={index}
               variant="quiz"
-              className="w-full p-6 h-auto text-left justify-start transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+              className="w-full p-6 h-auto text-left justify-start transition-all duration-300 hover:scale-[1.02] hover:shadow-lg disabled:opacity-50"
               onClick={() => handleAnswer(index)}
+              disabled={quiz.isTransitioning}
             >
               <div>
                 <div className="font-medium">{option.text}</div>

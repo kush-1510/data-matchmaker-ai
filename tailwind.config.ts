@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        gilroy: ['Gilroy', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Avenir', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
       },
         colors: {
           border: "hsl(var(--border))",

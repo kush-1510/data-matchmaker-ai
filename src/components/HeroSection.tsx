@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import heroBackground from '@/assets/hero-background.jpg';
 
 interface HeroSectionProps {
   onStartQuiz: () => void;
@@ -10,24 +9,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartQuiz }) => {
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div 
+      {/* <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: `url(${heroBackground})`,
           filter: 'blur(1px) opacity(0.3)'
         }}
-      />
+      /> */}
       
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
       
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent leading-tight font-heading">
+        <h1 className="font-gilroy text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent leading-tight font-heading">
           Who's your perfect<br />
-          <span className="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
+          <span className="font-gilroy bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
             data match?
-          </span> 💘
+          </span>
         </h1>
         
         <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
@@ -45,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartQuiz }) => {
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 text-4xl animate-bounce" style={{ animationDelay: '0s' }}>💕</div>
         <div className="absolute top-32 right-16 text-3xl animate-bounce" style={{ animationDelay: '1s' }}>📊</div>
-        <div className="absolute bottom-40 left-20 text-3xl animate-bounce" style={{ animationDelay: '2s' }}>🔍</div>
+        <div className="absolute bottom-48 left-20 text-3xl animate-bounce" style={{ animationDelay: '2s' }}>🔍</div>
         <div className="absolute bottom-20 right-10 text-4xl animate-bounce" style={{ animationDelay: '0.5s' }}>✨</div>
       </div>
       

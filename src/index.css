@@ -2,6 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font Face Declarations */
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-medium.woff2') format('woff2'),
+       url('/fonts/gilroy-medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-semibold.woff2') format('woff2'),
+       url('/fonts/gilroy-semibold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-bold.woff2') format('woff2'),
+       url('/fonts/gilroy-bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-extra-bold.woff2') format('woff2'),
+       url('/fonts/gilroy-extra-bold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-ultra-light.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -52,10 +129,10 @@ All colors MUST be HSL.
     --gradient-secondary: linear-gradient(135deg, hsl(195 100% 47%) 0%, hsl(195 100% 55%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(42 100% 55%) 0%, hsl(42 100% 65%) 100%);
     --gradient-hero: linear-gradient(135deg, 
-      hsl(234 71% 35%) 0%, 
-      hsl(234 71% 45%) 30%,
-      hsl(195 100% 47%) 70%, 
-      hsl(343 81% 69%) 100%
+      #141ABF 0%,
+      #3F1F9B 30%,
+      #74276D 70%, 
+      #932B55 100%
     );
     
     /* Dating app gradients */
