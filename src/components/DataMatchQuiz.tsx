@@ -1,8 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Share2, Linkedin, Twitter, RotateCcw } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Share2, Linkedin, Twitter, RotateCcw, X } from 'lucide-react';
 import XIcon from '../assets/x-icon.png';
+
+// TypeScript declaration for HubSpot
+declare global {
+  interface Window {
+    hbspt?: {
+      forms: {
+        create: (options: {
+          region: string;
+          portalId: string;
+          formId: string;
+          target: string;
+          onFormReady?: () => void;
+          onFormSubmit?: () => void;
+          onFormSubmitted?: () => void;
+        }) => void;
+      };
+    };
+  }
+}
 
 interface QuizState {
   currentQuestion: number;
@@ -17,6 +37,7 @@ interface QuizState {
   resultVisible: boolean;
   cardSwipeDirection: 'left' | 'right' | 'none';
   isCardAnimating: boolean;
+  showHubSpotModal: boolean;
 }
 
 interface LeadFormData {
@@ -108,7 +129,8 @@ export const DataMatchQuiz: React.FC = () => {
     slideDirection: 'none',
     resultVisible: false,
     cardSwipeDirection: 'none',
-    isCardAnimating: false
+    isCardAnimating: false,
+    showHubSpotModal: false
   });
 
   const [leadForm, setLeadForm] = useState<LeadFormData>({
@@ -244,7 +266,8 @@ export const DataMatchQuiz: React.FC = () => {
       slideDirection: 'none',
       resultVisible: false,
       cardSwipeDirection: 'none',
-      isCardAnimating: false
+      isCardAnimating: false,
+      showHubSpotModal: false
     });
   };
 
@@ -260,6 +283,256 @@ export const DataMatchQuiz: React.FC = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(url, '_blank');
   };
+
+  // HubSpot form integration
+  useEffect(() => {
+    // Load HubSpot script if not already loaded
+    if (!window.hbspt) {
+      const script = document.createElement('script');
+      script.src = '//js.hsforms.net/forms/embed/v2.js';
+      script.async = true;
+      script.onload = () => {
+        console.log('HubSpot script loaded');
+      };
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  const createHubSpotForm = () => {
+    if (window.hbspt) {
+      window.hbspt.forms.create({
+        region: "na1", // Replace with your HubSpot region
+        portalId: '6880682', // Replace with your HubSpot Portal ID
+        formId: "d8916772-d73e-4ca2-84f9-3abd8082be1d", // Replace with your HubSpot Form ID
+        target: '#hubspot-form-container',
+        css: '', // Disable HubSpot's default CSS
+        onFormReady: () => {
+          console.log('HubSpot form ready');
+          // Apply styling multiple times to ensure it sticks
+          setTimeout(() => applyCustomFormStyling(), 50);
+          setTimeout(() => applyCustomFormStyling(), 200);
+          setTimeout(() => applyCustomFormStyling(), 500);
+          setTimeout(() => applyCustomFormStyling(), 1000);
+        },
+        onFormSubmit: () => {
+          console.log('HubSpot form submitted');
+        },
+        onFormSubmitted: () => {
+          console.log('HubSpot form submission completed');
+          // Close modal after successful submission
+          setTimeout(() => {
+            setQuiz(prev => ({ ...prev, showHubSpotModal: false }));
+          }, 2000);
+        }
+      });
+    }
+  };
+
+  const applyCustomFormStyling = () => {
+    const container = document.getElementById('hubspot-form-container');
+    if (!container) return;
+
+    try {
+      // Remove any existing style tags to prevent conflicts
+      const existingStyles = container.querySelectorAll('style[data-custom-form-styles]');
+      existingStyles.forEach(style => style.remove());
+
+      // Create comprehensive CSS styles
+      const styleTag = document.createElement('style');
+      styleTag.setAttribute('data-custom-form-styles', 'true');
+      styleTag.textContent = `
+        #hubspot-form-container * {
+          box-sizing: border-box !important;
+        }
+        
+        #hubspot-form-container .hs-form {
+          font-family: inherit !important;
+        }
+        
+        #hubspot-form-container .hs-form-field {
+          margin-bottom: 1rem !important;
+        }
+        
+        #hubspot-form-container input[type="text"],
+        #hubspot-form-container input[type="email"],
+        #hubspot-form-container input[type="tel"],
+        #hubspot-form-container textarea,
+        #hubspot-form-container select {
+          display: flex !important;
+          height: 2.5rem !important;
+          width: 100% !important;
+          border-radius: 0.375rem !important;
+          border: 1px solid hsl(var(--border)) !important;
+          background-color: hsl(var(--background)) !important;
+          padding: 0.5rem 0.75rem !important;
+          font-size: 0.875rem !important;
+          line-height: 1.25rem !important;
+          color: hsl(var(--foreground)) !important;
+          outline: none !important;
+          transition: all 0.2s !important;
+          margin: 0 !important;
+        }
+        
+        #hubspot-form-container input:focus,
+        #hubspot-form-container textarea:focus,
+        #hubspot-form-container select:focus {
+          outline: 2px solid hsl(var(--ring)) !important;
+          outline-offset: 2px !important;
+          border-color: hsl(var(--ring)) !important;
+        }
+        
+        #hubspot-form-container input::placeholder,
+        #hubspot-form-container textarea::placeholder {
+          color: hsl(var(--muted-foreground)) !important;
+        }
+        
+        #hubspot-form-container label {
+          font-size: 0.875rem !important;
+          font-weight: 500 !important;
+          line-height: 1 !important;
+          margin-bottom: 0.5rem !important;
+          display: block !important;
+          color: hsl(var(--foreground)) !important;
+        }
+        
+        #hubspot-form-container .hs-error-msg,
+        #hubspot-form-container .hs-main-font-element {
+          font-size: 0.75rem !important;
+          color: #ef4444 !important;
+          margin-top: 0.25rem !important;
+          display: block !important;
+        }
+        
+        #hubspot-form-container input[type="submit"],
+        #hubspot-form-container button[type="submit"],
+        #hubspot-form-container .hs-button {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          border-radius: 0.375rem !important;
+          font-size: 0.875rem !important;
+          font-weight: 500 !important;
+          line-height: 1.25rem !important;
+          transition: all 0.2s !important;
+          background-color: hsl(var(--primary)) !important;
+          color: hsl(var(--primary-foreground)) !important;
+          border: none !important;
+          height: 2.5rem !important;
+          padding: 0.5rem 1rem !important;
+          width: 100% !important;
+          cursor: pointer !important;
+          margin-top: 1rem !important;
+        }
+        
+        #hubspot-form-container input[type="submit"]:hover,
+        #hubspot-form-container button[type="submit"]:hover,
+        #hubspot-form-container .hs-button:hover {
+          background-color: hsl(var(--primary)) !important;
+          opacity: 0.9 !important;
+        }
+        
+        #hubspot-form-container .hs-form-required {
+          color: #ef4444 !important;
+          font-size: 0.75rem !important;
+          margin-left: 0.25rem !important;
+        }
+        
+        #hubspot-form-container .hs-richtext,
+        #hubspot-form-container .hs-form-booleancheckbox-display:has(*:contains("HubSpot")) {
+          display: none !important;
+        }
+        
+        #hubspot-form-container .hs-form-booleancheckbox-display {
+          margin-top: 0.5rem !important;
+        }
+        
+        #hubspot-form-container .hs-form-booleancheckbox input[type="checkbox"] {
+          height: 1rem !important;
+          width: 1rem !important;
+          margin-right: 0.5rem !important;
+        }
+      `;
+      
+      container.appendChild(styleTag);
+
+      // Force submit button text update
+      setTimeout(() => {
+        const submitBtn = container.querySelector('input[type="submit"], button[type="submit"], .hs-button');
+        if (submitBtn && submitBtn.textContent !== 'Register for Re:Govern') {
+          (submitBtn as HTMLElement).textContent = 'Register for Re:Govern';
+        }
+      }, 100);
+
+      console.log('Enhanced form styling applied successfully');
+    } catch (error) {
+      console.error('Error applying form styling:', error);
+    }
+  };
+
+  const openHubSpotModal = () => {
+    setQuiz(prev => ({ ...prev, showHubSpotModal: true }));
+    // Create form after modal opens
+    setTimeout(() => {
+      createHubSpotForm();
+    }, 100);
+  };
+
+  const closeHubSpotModal = () => {
+    setQuiz(prev => ({ ...prev, showHubSpotModal: false }));
+    // Clear the form container
+    const container = document.getElementById('hubspot-form-container');
+    if (container) {
+      container.innerHTML = '';
+    }
+  };
+
+  // Robust styling persistence using MutationObserver
+  useEffect(() => {
+    if (quiz.showHubSpotModal) {
+      let observer: MutationObserver | null = null;
+      
+      const setupObserver = () => {
+        const container = document.getElementById('hubspot-form-container');
+        if (!container) return;
+
+        // Apply initial styling
+        applyCustomFormStyling();
+
+        // Set up observer to watch for DOM changes
+        observer = new MutationObserver((mutations) => {
+          let shouldRestyle = false;
+          
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' || mutation.type === 'attributes') {
+              shouldRestyle = true;
+            }
+          });
+
+          if (shouldRestyle) {
+            setTimeout(() => applyCustomFormStyling(), 100);
+          }
+        });
+
+        observer.observe(container, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class', 'style']
+        });
+      };
+
+      // Setup observer after modal opens
+      const timeoutId = setTimeout(setupObserver, 200);
+
+      // Cleanup function
+      return () => {
+        clearTimeout(timeoutId);
+        if (observer) {
+          observer.disconnect();
+        }
+      };
+    }
+  }, [quiz.showHubSpotModal]);
 
   const submitLeadForm = (e: React.FormEvent) => {
     e.preventDefault();
@@ -304,14 +577,14 @@ export const DataMatchQuiz: React.FC = () => {
         </div>
 
         <div className="text-center">
-          <a 
-            href="https://atlan.com/regovern/?ref=/regovern-quiz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          >
-            Join us at Re:Govern →
-          </a>
+          <Button 
+              variant="linkedin" 
+              size="lg" 
+              onClick={openHubSpotModal}
+              className="bg-primary"
+            >
+              Sign up for Re:Govern
+          </Button>
         </div>
 
         <div className="text-center">
@@ -320,6 +593,36 @@ export const DataMatchQuiz: React.FC = () => {
             Take Quiz Again
           </Button>
         </div>
+
+        {/* HubSpot Form Modal */}
+        <Dialog 
+          open={quiz.showHubSpotModal} 
+          onOpenChange={(open) => {
+            if (!open) {
+              closeHubSpotModal();
+            }
+          }}
+        >
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between">
+                Sign up for Re:Govern
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Join us at Re:Govern, the premier data governance conference. Register below 
+                to secure your spot and connect with data leaders from around the world.
+              </p>
+              <div id="hubspot-form-container" className="min-h-[200px]">
+                {/* HubSpot form will be injected here */}
+                <div className="flex items-center justify-center h-32">
+                  <div className="text-sm text-muted-foreground">Loading form...</div>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
