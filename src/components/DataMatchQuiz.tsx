@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Share2, Linkedin, Twitter, RotateCcw, X } from 'lucide-react';
 import XIcon from '../assets/x-icon.png';
 
-// TypeScript declaration for HubSpot
+// TypeScript declarations for HubSpot and Google Analytics
 declare global {
   interface Window {
     hbspt?: {
@@ -21,6 +21,11 @@ declare global {
         }) => void;
       };
     };
+    gtag?: (
+      command: 'config' | 'event' | 'js' | 'set',
+      targetId: string | Date | object,
+      config?: object
+    ) => void;
   }
 }
 
@@ -144,6 +149,14 @@ export const DataMatchQuiz: React.FC = () => {
     const newAnswers = [...quiz.answers];
     newAnswers[quiz.currentQuestion] = answerIndex;
     
+    // Track quiz answer
+    trackEvent('quiz_answer', {
+      question_number: quiz.currentQuestion + 1,
+      answer_index: answerIndex,
+      answer_text: questions[quiz.currentQuestion].options[answerIndex].text,
+      quiz_progress: `${quiz.currentQuestion + 1}/${questions.length}`
+    });
+    
     // Start slide-out transition
     setQuiz({
       ...quiz,
@@ -185,6 +198,14 @@ export const DataMatchQuiz: React.FC = () => {
   };
 
   const handleCardChoice = (choice: 'skip' | 'choose') => {
+    // Track card swipe action
+    trackEvent('card_swipe', {
+      action: choice,
+      card_title: results[quiz.currentCard].title,
+      card_position: quiz.currentCard + 1,
+      total_cards: results.length
+    });
+    
     // Start swipe animation
     setQuiz({
       ...quiz,
@@ -195,6 +216,13 @@ export const DataMatchQuiz: React.FC = () => {
     // After swipe animation, handle the logic
     setTimeout(() => {
       if (choice === 'choose') {
+        // Track quiz completion
+        trackEvent('quiz_complete', {
+          selected_match: results[quiz.currentCard].id,
+          match_title: results[quiz.currentCard].title,
+          completion_method: 'card_selection'
+        });
+        
         setQuiz({
           ...quiz,
           selectedMatch: results[quiz.currentCard].id,
@@ -219,21 +247,27 @@ export const DataMatchQuiz: React.FC = () => {
             isCardAnimating: false
           });
         } else {
-          // If they've skipped all cards, show Atlan as default
-          setQuiz({
-            ...quiz,
-            selectedMatch: 'atlan',
-            showResult: true,
-            cardSwipeDirection: 'none',
-            isCardAnimating: false
-          });
-          // Trigger fade-in animation after a small delay
-          setTimeout(() => {
-            setQuiz(prev => ({
-              ...prev,
-              resultVisible: true
-            }));
-          }, 100);
+        // If they've skipped all cards, show Atlan as default
+        trackEvent('quiz_complete', {
+          selected_match: 'atlan',
+          match_title: 'Atlan',
+          completion_method: 'skipped_all_cards'
+        });
+        
+        setQuiz({
+          ...quiz,
+          selectedMatch: 'atlan',
+          showResult: true,
+          cardSwipeDirection: 'none',
+          isCardAnimating: false
+        });
+        // Trigger fade-in animation after a small delay
+        setTimeout(() => {
+          setQuiz(prev => ({
+            ...prev,
+            resultVisible: true
+          }));
+        }, 100);
         }
       }
     }, 700); // 700ms for swipe animation
@@ -254,6 +288,12 @@ export const DataMatchQuiz: React.FC = () => {
   };
 
   const resetQuiz = () => {
+    // Track quiz reset
+    trackEvent('quiz_reset', {
+      previous_result: quiz.selectedMatch || 'unknown',
+      source: 'results_page'
+    });
+    
     setQuiz({
       currentQuestion: 0,
       answers: [null, null, null],
@@ -275,13 +315,43 @@ export const DataMatchQuiz: React.FC = () => {
   const shareText = "I just found my perfect data match! Take the quiz to find yours.";
 
   const shareOnLinkedIn = () => {
+    // Track LinkedIn share click
+    trackEvent('share_linkedin', {
+      quiz_result: getResult().id,
+      share_platform: 'linkedin'
+    });
+    
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
     window.open(url, '_blank');
   };
 
   const shareOnTwitter = () => {
+    // Track Twitter share click
+    trackEvent('share_twitter', {
+      quiz_result: getResult().id,
+      share_platform: 'twitter'
+    });
+    
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(url, '_blank');
+  };
+
+  // Google Analytics tracking function
+  const trackEvent = (eventName: string, parameters?: object) => {
+    try {
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', eventName, {
+          event_category: 'data_matchmaker_quiz',
+          event_label: eventName,
+          ...parameters
+        });
+        // console.log('GA Event tracked:', eventName, parameters);
+      } else {
+        // console.log('GA not available, would track:', eventName, parameters);
+      }
+    } catch (error) {
+      console.error('Error tracking GA event:', error);
+    }
   };
 
   // HubSpot form integration
@@ -292,7 +362,7 @@ export const DataMatchQuiz: React.FC = () => {
       script.src = '//js.hsforms.net/forms/embed/v2.js';
       script.async = true;
       script.onload = () => {
-        console.log('HubSpot script loaded');
+        // console.log('HubSpot script loaded');
       };
       document.body.appendChild(script);
     }
@@ -307,7 +377,7 @@ export const DataMatchQuiz: React.FC = () => {
         target: '#hubspot-form-container',
         css: '', // Disable HubSpot's default CSS
         onFormReady: () => {
-          console.log('HubSpot form ready');
+          // console.log('HubSpot form ready');
           // Apply styling multiple times to ensure it sticks
           setTimeout(() => applyCustomFormStyling(), 50);
           setTimeout(() => applyCustomFormStyling(), 200);
@@ -315,10 +385,17 @@ export const DataMatchQuiz: React.FC = () => {
           setTimeout(() => applyCustomFormStyling(), 1000);
         },
         onFormSubmit: () => {
-          console.log('HubSpot form submitted');
+          // console.log('HubSpot form submitted');
         },
         onFormSubmitted: () => {
-          console.log('HubSpot form submission completed');
+          // console.log('HubSpot form submission completed');
+          
+          // Track successful form submission
+          trackEvent('regovern_signup_complete', {
+            quiz_result: quiz.selectedMatch || 'unknown',
+            form_source: 'hubspot_modal'
+          });
+          
           // Close modal after successful submission
           setTimeout(() => {
             setQuiz(prev => ({ ...prev, showHubSpotModal: false }));
@@ -463,13 +540,19 @@ export const DataMatchQuiz: React.FC = () => {
         }
       }, 100);
 
-      console.log('Enhanced form styling applied successfully');
+      // console.log('Enhanced form styling applied successfully');
     } catch (error) {
       console.error('Error applying form styling:', error);
     }
   };
 
   const openHubSpotModal = () => {
+    // Track Re:Govern signup click
+    trackEvent('regovern_signup_click', {
+      quiz_result: quiz.selectedMatch || 'unknown',
+      source: 'quiz_results'
+    });
+    
     setQuiz(prev => ({ ...prev, showHubSpotModal: true }));
     // Create form after modal opens
     setTimeout(() => {
@@ -559,7 +642,18 @@ export const DataMatchQuiz: React.FC = () => {
           <p className="text-lg text-muted-foreground mb-6 whitespace-pre-line">{result.description}</p>
           
           <div className="space-y-4">
-            <Button size="lg" onClick={() => window.open(result.ctaUrl, '_blank')}>
+            <Button 
+              size="lg" 
+              onClick={() => {
+                trackEvent('result_cta_click', {
+                  result_id: result.id,
+                  result_title: result.title,
+                  cta_text: result.ctaText,
+                  destination_url: result.ctaUrl
+                });
+                window.open(result.ctaUrl, '_blank');
+              }}
+            >
               {result.ctaText}
             </Button>
           </div>
