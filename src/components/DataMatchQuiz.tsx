@@ -375,7 +375,7 @@ export const DataMatchQuiz: React.FC = () => {
         portalId: '6880682', // Replace with your HubSpot Portal ID
         formId: "d8916772-d73e-4ca2-84f9-3abd8082be1d", // Replace with your HubSpot Form ID
         target: '#hubspot-form-container',
-        css: '', // Disable HubSpot's default CSS
+        
         onFormReady: () => {
           // console.log('HubSpot form ready');
           // Apply styling multiple times to ensure it sticks
@@ -660,14 +660,22 @@ export const DataMatchQuiz: React.FC = () => {
         </Card>
 
         <div className="flex justify-center space-x-4">
-          <Button variant="linkedin" onClick={shareOnLinkedIn}>
-            <Linkedin className="w-4 h-4 mr-2" />
+          <a 
+            href="#" 
+            onClick={shareOnLinkedIn}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[hsl(var(--linkedin))] text-white hover:bg-[hsl(var(--linkedin))]/90 rounded-lg font-medium transition-colors"
+          >
+            <Linkedin className="w-4 h-4" />
             Share on LinkedIn
-          </Button>
-          <Button variant="twitter" onClick={shareOnTwitter}>
-            <img src={XIcon} alt="X icon" className="w-6 h-6 mr-1" />
+          </a>
+          <a 
+            href="#" 
+            onClick={shareOnTwitter}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[hsl(var(--twitter))] text-white hover:bg-[hsl(var(--twitter))]/90 rounded-lg font-medium transition-colors"
+          >
+            <img src={XIcon} alt="X icon" className="w-4 h-4" />
             Share on X
-          </Button>
+          </a>
         </div>
 
         <div className="text-center">
